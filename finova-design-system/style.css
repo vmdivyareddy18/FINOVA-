@@ -25,7 +25,7 @@ header {
     justify-content: space-between;
     align-items: center;
     padding: 15px 8%;
-    background: #ff69b4;
+    background: #69cbff;
     position: sticky;
     top: 0;
     z-index: 1000;
@@ -55,7 +55,7 @@ nav ul li a {
 
 nav ul li a:hover,
 nav ul li a.active {
-    color: #ffe4ec;
+    color: #818f25;
 }
 
 /* =========================
@@ -91,7 +91,7 @@ nav ul li a.active {
 .btn {
     display: inline-block;
     padding: 12px 30px;
-    background: #ff69b4;
+    background: #2b8af1;
     color: #fff;
     text-decoration: none;
     border-radius: 30px;
@@ -107,7 +107,7 @@ nav ul li a.active {
 ========================= */
 
 .page-banner {
-    background: #ffb6c1;
+    background: #a32034;
     padding: 60px 20px;
     text-align: center;
 }
@@ -284,7 +284,7 @@ nav ul li a.active {
 ========================= */
 
 footer {
-    background: #ff69b4;
+    background: #69ffdc;
     color: #fff;
     text-align: center;
     padding: 20px;
