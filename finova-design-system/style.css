@@ -238,7 +238,7 @@ nav ul li a.active {
 
 .contact-info h2,
 .contact-form h2 {
-    color: #ff1493;
+    color: #5a14ff;
     margin-bottom: 20px;
 }
 
@@ -262,7 +262,7 @@ nav ul li a.active {
 
 .contact-form input:focus,
 .contact-form textarea:focus {
-    border-color: #ff69b4;
+    border-color: #e6dae0;
 }
 
 .contact-form button {
@@ -276,7 +276,7 @@ nav ul li a.active {
 }
 
 .contact-form button:hover {
-    background: #ff1493;
+    background: #0e080c;
 }
 
 /* =========================
