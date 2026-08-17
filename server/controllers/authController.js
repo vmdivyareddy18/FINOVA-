@@ -69,6 +69,7 @@ const login = async (req, res) => {
                     });
                 }
 
+                console.log("[LOGIN] JWT_SECRET in authController:", process.env.JWT_SECRET);
                 const token = jwt.sign(
                     { id: user.id },
                     process.env.JWT_SECRET,
@@ -76,6 +77,7 @@ const login = async (req, res) => {
                         expiresIn: "1d"
                     }
                 );
+                console.log("[LOGIN] Token created:", token);
 
                 res.status(200).json({
                     message: "Login successful",
