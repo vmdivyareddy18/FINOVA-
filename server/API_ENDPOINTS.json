@@ -1,0 +1,462 @@
+{
+    "api_version": "1.0.0",
+    "base_url": "http://localhost:5001",
+    "authentication": {
+        "type": "JWT Bearer Token",
+        "header": "Authorization: Bearer {token}",
+        "expiration": "1 day"
+    },
+    "endpoints": [
+        {
+            "id": 1,
+            "category": "AUTH",
+            "method": "POST",
+            "path": "/api/auth/register",
+            "protected": false,
+            "description": "Register a new user",
+            "request_body": {
+                "name": "string (required)",
+                "email": "string (required, unique)",
+                "password": "string (required)"
+            },
+            "response_success": {
+                "status": 201,
+                "body": {
+                    "message": "User registered successfully"
+                }
+            },
+            "errors": [
+                {
+                    "status": 400,
+                    "message": "User already exists"
+                },
+                {
+                    "status": 500,
+                    "message": "Error creating user"
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "category": "AUTH",
+            "method": "POST",
+            "path": "/api/auth/login",
+            "protected": false,
+            "description": "Login and get JWT token",
+            "request_body": {
+                "email": "string (required)",
+                "password": "string (required)"
+            },
+            "response_success": {
+                "status": 200,
+                "body": {
+                    "message": "Login successful",
+                    "token": "string (JWT token)",
+                    "user": {
+                        "id": "integer",
+                        "name": "string",
+                        "email": "string"
+                    }
+                }
+            },
+            "errors": [
+                {
+                    "status": 400,
+                    "message": "Invalid email or password"
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "category": "AUTH",
+            "method": "GET",
+            "path": "/api/auth/profile",
+            "protected": true,
+            "description": "Get authenticated user profile",
+            "response_success": {
+                "status": 200,
+                "body": {
+                    "message": "Protected profile",
+                    "user": {
+                        "id": "integer"
+                    }
+                }
+            },
+            "errors": [
+                {
+                    "status": 401,
+                    "message": "Access denied. No token provided."
+                }
+            ]
+        },
+        {
+            "id": 4,
+            "category": "TRANSACTIONS",
+            "method": "POST",
+            "path": "/api/transactions",
+            "protected": true,
+            "description": "Create a new transaction",
+            "request_body": {
+                "type": "string (Income|Expense, required)",
+                "amount": "decimal (required, > 0)",
+                "category": "string (required)",
+                "description": "string (optional)",
+                "date": "string (optional, format: YYYY-MM-DD)"
+            },
+            "response_success": {
+                "status": 201,
+                "body": {
+                    "message": "Transaction created successfully",
+                    "transactionId": "integer"
+                }
+            },
+            "errors": [
+                {
+                    "status": 400,
+                    "message": "Missing required fields: type, amount, category"
+                }
+            ]
+        },
+        {
+            "id": 5,
+            "category": "TRANSACTIONS",
+            "method": "GET",
+            "path": "/api/transactions",
+            "protected": true,
+            "description": "Get all transactions for authenticated user",
+            "query_params": null,
+            "response_success": {
+                "status": 200,
+                "body": {
+                    "message": "Transactions fetched successfully",
+                    "transactions": [
+                        {
+                            "id": "integer",
+                            "user_id": "integer",
+                            "type": "Income|Expense",
+                            "amount": "decimal",
+                            "category": "string",
+                            "description": "string|null",
+                            "date": "ISO datetime"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "id": 6,
+            "category": "TRANSACTIONS",
+            "method": "PUT",
+            "path": "/api/transactions/:id",
+            "protected": true,
+            "description": "Update a transaction",
+            "url_params": {
+                "id": "integer (transaction id)"
+            },
+            "request_body": {
+                "type": "string (optional)",
+                "amount": "decimal (optional)",
+                "category": "string (optional)",
+                "description": "string (optional)",
+                "date": "string (optional)"
+            },
+            "response_success": {
+                "status": 200,
+                "body": {
+                    "message": "Transaction updated successfully"
+                }
+            },
+            "errors": [
+                {
+                    "status": 404,
+                    "message": "Transaction not found or unauthorized"
+                }
+            ]
+        },
+        {
+            "id": 7,
+            "category": "TRANSACTIONS",
+            "method": "DELETE",
+            "path": "/api/transactions/:id",
+            "protected": true,
+            "description": "Delete a transaction",
+            "url_params": {
+                "id": "integer (transaction id)"
+            },
+            "response_success": {
+                "status": 200,
+                "body": {
+                    "message": "Transaction deleted successfully"
+                }
+            },
+            "errors": [
+                {
+                    "status": 404,
+                    "message": "Transaction not found or unauthorized"
+                }
+            ]
+        },
+        {
+            "id": 8,
+            "category": "BUDGET",
+            "method": "POST",
+            "path": "/api/budget",
+            "protected": true,
+            "description": "Create a monthly budget",
+            "request_body": {
+                "amount": "decimal (required, > 0)",
+                "month": "string (required, format: YYYY-MM)"
+            },
+            "response_success": {
+                "status": 201,
+                "body": {
+                    "message": "Budget created successfully",
+                    "budgetId": "integer"
+                }
+            },
+            "errors": [
+                {
+                    "status": 400,
+                    "message": "Budget already exists for this month"
+                }
+            ]
+        },
+        {
+            "id": 9,
+            "category": "BUDGET",
+            "method": "GET",
+            "path": "/api/budget",
+            "protected": true,
+            "description": "Get all budgets for user",
+            "response_success": {
+                "status": 200,
+                "body": {
+                    "message": "Budgets fetched successfully",
+                    "budgets": [
+                        {
+                            "id": "integer",
+                            "user_id": "integer",
+                            "amount": "decimal",
+                            "month": "YYYY-MM"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "id": 10,
+            "category": "BUDGET",
+            "method": "PUT",
+            "path": "/api/budget/:id",
+            "protected": true,
+            "description": "Update a budget",
+            "url_params": {
+                "id": "integer (budget id)"
+            },
+            "request_body": {
+                "amount": "decimal (optional)",
+                "month": "string (optional)"
+            },
+            "response_success": {
+                "status": 200,
+                "body": {
+                    "message": "Budget updated successfully"
+                }
+            }
+        },
+        {
+            "id": 11,
+            "category": "GOALS",
+            "method": "POST",
+            "path": "/api/goals",
+            "protected": true,
+            "description": "Create a financial goal",
+            "request_body": {
+                "title": "string (required)",
+                "target_amount": "decimal (required, > 0)",
+                "saved_amount": "decimal (optional, default: 0)"
+            },
+            "response_success": {
+                "status": 201,
+                "body": {
+                    "message": "Goal created successfully",
+                    "goalId": "integer"
+                }
+            }
+        },
+        {
+            "id": 12,
+            "category": "GOALS",
+            "method": "GET",
+            "path": "/api/goals",
+            "protected": true,
+            "description": "Get all goals for user",
+            "response_success": {
+                "status": 200,
+                "body": {
+                    "message": "Goals fetched successfully",
+                    "goals": [
+                        {
+                            "id": "integer",
+                            "user_id": "integer",
+                            "title": "string",
+                            "target_amount": "decimal",
+                            "saved_amount": "decimal"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "id": 13,
+            "category": "GOALS",
+            "method": "PUT",
+            "path": "/api/goals/:id",
+            "protected": true,
+            "description": "Update a goal",
+            "url_params": {
+                "id": "integer (goal id)"
+            },
+            "request_body": {
+                "title": "string (optional)",
+                "target_amount": "decimal (optional)",
+                "saved_amount": "decimal (optional)"
+            },
+            "response_success": {
+                "status": 200,
+                "body": {
+                    "message": "Goal updated successfully"
+                }
+            }
+        },
+        {
+            "id": 14,
+            "category": "GOALS",
+            "method": "DELETE",
+            "path": "/api/goals/:id",
+            "protected": true,
+            "description": "Delete a goal",
+            "url_params": {
+                "id": "integer (goal id)"
+            },
+            "response_success": {
+                "status": 200,
+                "body": {
+                    "message": "Goal deleted successfully"
+                }
+            }
+        },
+        {
+            "id": 15,
+            "category": "DASHBOARD",
+            "method": "GET",
+            "path": "/api/dashboard",
+            "protected": true,
+            "description": "Get financial dashboard summary",
+            "response_success": {
+                "status": 200,
+                "body": {
+                    "message": "Dashboard data fetched successfully",
+                    "dashboard": {
+                        "totalIncome": "decimal",
+                        "totalExpense": "decimal",
+                        "balance": "decimal",
+                        "latestTransactions": [
+                            {
+                                "id": "integer",
+                                "user_id": "integer",
+                                "type": "Income|Expense",
+                                "amount": "decimal",
+                                "category": "string",
+                                "description": "string|null",
+                                "date": "ISO datetime"
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "id": 16,
+            "category": "REPORTS",
+            "method": "GET",
+            "path": "/api/reports/monthly",
+            "protected": true,
+            "description": "Get monthly income/expense report",
+            "query_params": {
+                "month": "string (required, format: YYYY-MM)"
+            },
+            "response_success": {
+                "status": 200,
+                "body": {
+                    "message": "Monthly report fetched successfully",
+                    "report": {
+                        "month": "YYYY-MM",
+                        "totalIncome": "decimal",
+                        "totalExpense": "decimal",
+                        "balance": "decimal"
+                    }
+                }
+            },
+            "errors": [
+                {
+                    "status": 400,
+                    "message": "Month parameter is required (format: YYYY-MM)"
+                }
+            ]
+        },
+        {
+            "id": 17,
+            "category": "REPORTS",
+            "method": "GET",
+            "path": "/api/reports/category",
+            "protected": true,
+            "description": "Get spending by category report",
+            "query_params": {
+                "month": "string (optional, format: YYYY-MM, if omitted shows all-time)"
+            },
+            "response_success": {
+                "status": 200,
+                "body": {
+                    "message": "Category report fetched successfully",
+                    "report": {
+                        "month": "YYYY-MM|all-time",
+                        "byCategory": [
+                            {
+                                "category": "string",
+                                "type": "Income|Expense",
+                                "total": "decimal",
+                                "count": "integer"
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    ],
+    "summary": {
+        "total_endpoints": 17,
+        "public_endpoints": 2,
+        "protected_endpoints": 15,
+        "categories": [
+            "AUTH",
+            "TRANSACTIONS",
+            "BUDGET",
+            "GOALS",
+            "DASHBOARD",
+            "REPORTS"
+        ]
+    },
+    "common_headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer {jwt_token}"
+    },
+    "status_codes": {
+        "200": "Success",
+        "201": "Created",
+        "400": "Bad Request",
+        "401": "Unauthorized",
+        "404": "Not Found",
+        "500": "Internal Server Error"
+    }
+}
